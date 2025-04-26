@@ -1,0 +1,30 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Oddsecho</title>
+</head>
+<body>
+    <h1>Oddsecho</h1>
+    <form method="post">
+        <label>Enter Odds:</label>
+        <input type="text" name="odds" required>
+        <button type="submit">Search</button>
+    </form>
+
+    {% if query_odds %}
+        <h2>Results for odds: {{ query_odds }}</h2>
+        {% if results %}
+            <ul>
+                {% for row in results %}
+                    <li>{{ row.team1 }} vs {{ row.team2 }} – Result: {{ row.result }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No matches found.</p>
+        {% endif %}
+    {% endif %}
+</body>
+</html>
+
+
