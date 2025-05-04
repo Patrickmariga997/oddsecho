@@ -1,0 +1,53 @@
+
+
+1. main.py (Flask Backend)
+
+from flask import Flask, request, jsonify
+import pandas as pd
+from fuzzywuzzy import fuzz
+
+app = Flask(__name__)
+df = pd.read_csv('data.csv')
+
+@app.route('/api/check-odds', methods=['POST'])
+def check_odds():
+    input_odds = request.json.get('odds')
+    if not input_odds:
+        return jsonify({"error": "No odds provided"}), 400
+
+    results = []
+    for i, row in df.iterrows():
+        similarity = fuzz.ratio(str(row['odds']), str(input_odds))
+        if similarity > 80:  # Fuzzy threshold
+            results.append({
+                "match": row['match'],
+                "odds": row['odds'],
+                "result": row['result'],
+                "similarity": similarity
+            })
+
+    return jsonify(results)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+
+---
+
+2. requirements.txt
+
+flask
+pandas
+fuzzywuzzy
+python-Levenshtein
+
+
+---
+
+3. data.csv (Sample Match Data)
+
+match,odds,result
+Team A vs Team B,2.30,Win
+Team C vs Team D,2.35,Lose
+Team E vs Team F,2.31,Draw
+
